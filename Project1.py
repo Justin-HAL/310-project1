@@ -10,6 +10,7 @@ Game_board = [
 ]
 
 Game_Over = False
+Game_Won = False
 
 #array storing avaible moves
 
@@ -32,13 +33,10 @@ def print_board():
     print('\n')
 
 
-def check_game_over(piece: str) -> bool:
+def check_game_won(piece: str) -> bool:
     global Game_board
-    global Game_Over
     global Available_moves
-    if len(Available_moves) <= 0:
-        Game_Over = True
-        return True
+
     # Check rows
     for row in range(3):
         if Game_board[row*2][0] == Game_board[row*2][2] == Game_board[row*2][4] == piece:
@@ -49,6 +47,7 @@ def check_game_over(piece: str) -> bool:
         if Game_board[0][column*2] == Game_board[2][column*2] == Game_board[4][column*2] == piece:
             Game_Over = True
             return True
+
     # Check diagonals
     if Game_board[0][0] == Game_board[2][2] == Game_board[4][4] == piece:
         Game_Over = True
@@ -61,7 +60,8 @@ def check_game_over(piece: str) -> bool:
 def Place_piece(piece: str):
     global Available_moves
     global Game_board
-    if len(Available_moves) > 0:
+    global Game_Over
+    if len(Available_moves) > 0 and not Game_Over:
         move = random.choice(Available_moves)
         row, column = move
         Game_board[row][column] = piece
@@ -82,7 +82,7 @@ def player_thread(piece: str):
             print(f"Player {piece} is making a move:")
             Place_piece(piece)
             print_board()
-            if check_game_over(piece):
+            if check_game_won(piece):
                 print(f"Player {piece} wins!")
                 Game_Over = True
                 condition.notify_all()
@@ -113,3 +113,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
