@@ -9,19 +9,8 @@ Game_board = [
     [' ','|',' ','|',' ']
 ]
 
-Player1_turn = True
 Game_Over = False
 
-player1_piece = 'x'
-player2_piece = 'o'
-#print 2d array
-def print_board():
-    global Game_board
-    for row in Game_board:
-        for element in row:
-            print(element, end="")
-        print()
-    print('\n')
 #array storing avaible moves
 
 Available_moves = [(0,0),(0,2),(0,4),
@@ -33,30 +22,43 @@ Available_moves = [(0,0),(0,2),(0,4),
 condition = threading.Condition()
 turn = 'X'  
 
-
-def check_game_over(piece : str) -> bool:
+#print 2d array
+def print_board():
     global Game_board
-    #check rows
+    for row in Game_board:
+        for element in row:
+            print(element, end="")
+        print()
+    print('\n')
+
+
+def check_game_over(piece: str) -> bool:
+    global Game_board
+    global Game_Over
+    global Available_moves
+    if len(Available_moves) <= 0:
+        Game_Over = True
+        return True
+    # Check rows
     for row in range(3):
         if Game_board[row*2][0] == Game_board[row*2][2] == Game_board[row*2][4] == piece:
             Game_Over = True
             return True
-    #check columns
+    # Check columns
     for column in range(3):
         if Game_board[0][column*2] == Game_board[2][column*2] == Game_board[4][column*2] == piece:
             Game_Over = True
             return True
-    #check diagonal
-
+    # Check diagonals
     if Game_board[0][0] == Game_board[2][2] == Game_board[4][4] == piece:
         Game_Over = True
         return True
-    
-    if Game_board[4][0] ==Game_board[2][2] == Game_board[0][4] == piece:
+    if Game_board[4][0] == Game_board[2][2] == Game_board[0][4] == piece:
         Game_Over = True
         return True
     return False
-def Place_piece(piece : str):
+
+def Place_piece(piece: str):
     global Available_moves
     global Game_board
     if len(Available_moves) > 0:
