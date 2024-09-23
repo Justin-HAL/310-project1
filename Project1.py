@@ -1,5 +1,7 @@
 import threading
 import random
+import time
+
 #2d array
 Game_board = [
     [' ','|',' ','|',' '],
@@ -71,6 +73,7 @@ def player_thread(piece: str):
     global Game_Over
     global condition
     global turn
+    time.sleep(0.5)
     while not Game_Over:
         with condition:
             while turn != piece and not Game_Over:
@@ -82,6 +85,7 @@ def player_thread(piece: str):
             print(f"Player {piece} is making a move:")
             Place_piece(piece)
             print_board()
+            time.sleep(1)
             if check_game_won(piece):
                 print(f"Player {piece} wins!")
                 Game_Over = True
