@@ -12,10 +12,10 @@ Game_board = [
 ]
 
 Game_Over = False
-Game_Won = False
+
+mutex_lock = threading.Lock()
 
 #array storing avaible moves
-
 Available_moves = [(0,0),(0,2),(0,4),
                    (2,0),(2,2),(2,4),
                    (4,0),(4,2),(4,4)]
@@ -82,6 +82,7 @@ def player_thread(piece: str):
                 condition.notify_all()
                 break
             # Player's turn
+            mutex_lock.acquire()
             print(f"Player {piece} is making a move:")
             Place_piece(piece)
             print_board()
@@ -99,10 +100,8 @@ def player_thread(piece: str):
             # Switch turn to the other player
             turn = 'O' if piece == 'X' else 'X'
             condition.notify_all()
-
+            mutex_lock.release()
 def main():
-    global Game_Over
-
     # Create threads for both players
     t1 = threading.Thread(target=player_thread, args=('X',))
     t2 = threading.Thread(target=player_thread, args=('O',))
@@ -117,4 +116,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
